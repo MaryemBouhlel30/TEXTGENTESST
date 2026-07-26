@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Training Legacy App</title>
+</head>
+<body>
+  <h1>Connexion</h1>
+
+  <!--
+    Sélecteurs volontairement fragiles pour le Lab 11 :
+    pas de <label> associé, id générique (u/p), classes utilitaires (btn-2)
+    sans rôle ARIA. Objectif : remplacer par getByRole/getByLabel.
+  -->
+  <form id="login-form">
+    <input type="text" id="u" name="username" placeholder="Nom d'utilisateur" />
+    <input type="password" id="p" name="password" placeholder="Mot de passe" />
+    <button type="submit" class="btn btn-2">Se connecter</button>
+  </form>
+  <div id="result"></div>
+
+  <script>
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('u').value;
+      const password = document.getElementById('p').value;
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      });
+      const data = await res.json();
+      document.getElementById('result').textContent = data.ok
+        ? `Bienvenue ${data.username}`
+        : `Erreur: ${data.error}`;
+    });
+  </script>
+</body>
+</html>
