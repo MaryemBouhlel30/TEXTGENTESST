@@ -1,7 +1,7 @@
 /**
  * Regroupement de transactions par jour.
  *
- * BUG CONNU (Lab 7 — Bug #2, timezone) : `groupByDay` utilise
+ * BUG CONNU (Bug #2, timezone) : `groupByDay` utilise
  * `toLocaleDateString()` sur des timestamps UTC, ce qui applique le fuseau
  * horaire LOCAL du serveur. Pour un serveur dans un fuseau en avance sur UTC
  * (ex: UTC+1, UTC+2 — cas de la Tunisie/Europe), une transaction de dimanche

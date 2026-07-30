@@ -3,13 +3,13 @@ import { getConnection } from '../db';
 /**
  * Transfert de fonds entre deux comptes.
  *
- * BUG CONNU (Lab 7 — Bug #4, verrou mutuel / deadlock SQL) : deux transferts
+ * BUG CONNU (Bug #4, verrou mutuel / deadlock SQL) : deux transferts
  * concurrents en sens opposé (A→B et B→A) verrouillent chacun leur ligne de
  * débit avant de tenter de verrouiller la ligne de crédit. Sous charge
  * concurrente, chaque transaction attend un verrou détenu par l'autre.
  * Symptôme : erreur SQLITE_BUSY / "database table is locked" intermittente,
  * uniquement quand deux transferts opposés se chevauchent dans le temps.
- * Logs de la base à fournir aux participants pour l'analyse (Lab 7).
+ * Logs de la base à fournir aux participants pour l'analyse (module de débogage dédié).
  */
 
 export function transfer(fromId: number, toId: number, amount: number): void {

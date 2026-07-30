@@ -14,4 +14,4 @@ describe('calculateTTC', () => {
 });
 
 // Volontairement absent : tests pour isOverdue, applyLatePenalty,
-// canBeCancelled, nextStatus -> couverture initiale < 20% (objectif Lab 9).
+// canBeCancelled, nextStatus -> couverture initiale < 20% (objectif du module de revue de code & tests dédié).

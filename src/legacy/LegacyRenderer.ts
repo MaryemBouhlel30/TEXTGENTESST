@@ -1,5 +1,5 @@
 /**
- * LegacyRenderer — module legacy à refactorer (Lab 8).
+ * LegacyRenderer — module legacy à refactorer (module de refactoring dédié).
  *
  * Code smells volontaires :
  *  - God Class : une seule classe gère génération, formatage ET envoi.

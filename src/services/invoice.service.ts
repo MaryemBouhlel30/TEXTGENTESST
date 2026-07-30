@@ -1,7 +1,7 @@
 /**
  * Service de gestion des factures.
  * Couverture initiale volontairement faible (< 20%) — seule `calculateTTC`
- * est testée (voir tests/invoice.service.test.ts). Objectif Lab 9 :
+ * est testée (voir tests/invoice.service.test.ts). Objectif du module de revue de code & tests dédié :
  * générer les tests manquants et dépasser 70% de couverture.
  */
 

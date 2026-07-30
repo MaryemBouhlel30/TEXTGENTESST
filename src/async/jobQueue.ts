@@ -1,7 +1,7 @@
 /**
  * File de traitement de commandes en parallèle.
  *
- * BUG CONNU (Lab 7 — Bug #3, race condition async) : `processOrder` lit
+ * BUG CONNU (Bug #3, race condition async) : `processOrder` lit
  * `processedCount` puis, après un `await` intermédiaire, écrit
  * `current + 1`. Quand plusieurs commandes sont traitées en parallèle
  * (`processAll` via `Promise.all`), deux appels peuvent lire la même valeur

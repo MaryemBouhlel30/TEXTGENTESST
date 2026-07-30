@@ -3,7 +3,7 @@ import crypto from 'crypto';
 /**
  * Service d'authentification.
  *
- * BUG CONNU (Lab 7 — Bug #1, échauffement) : `login` recalcule un salt
+ * BUG CONNU (Bug #1, échauffement) : `login` recalcule un salt
  * aléatoire à chaque tentative au lieu de réutiliser celui stocké avec
  * l'utilisateur. Le hash calculé ne correspond donc jamais au hash stocké,
  * même avec le bon mot de passe. Reproduction simple et systématique,
