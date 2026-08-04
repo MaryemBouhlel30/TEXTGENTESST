@@ -4,6 +4,7 @@ import { registerUser, login } from './services/auth.service';
 import { calculateTTC, Invoice } from './services/invoice.service';
 import { LegacyRenderer, ReportType } from './legacy/LegacyRenderer';
 import { generate as generateText } from './services/template.service';
+import { generateSummaryReport } from './services/summary.service';
 
 export function createApp() {
   const app = express();
@@ -35,6 +36,17 @@ export function createApp() {
     }
     const result = generateText(template, context ?? {});
     res.json(result);
+  });
+
+  // [DEV: MBH] [DATE: 2026-08-04] [JIRA: JIRA-123]
+  app.post('/api/summary', (req, res) => {
+    const { text } = req.body ?? {};
+    if (typeof text !== 'string') {
+      res.status(400).json({ error: 'Le champ "text" (string) est requis' });
+      return;
+    }
+    const { report, errors } = generateSummaryReport(text);
+    res.json({ report, errors });
   });
 
   app.get('/api/reports/:type', (req, res) => {
