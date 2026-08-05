@@ -1,15 +1,5 @@
 import crypto from 'crypto';
 
-/**
- * Service d'authentification.
- *
- * BUG CONNU (Bug #1, échauffement) : `login` recalcule un salt
- * aléatoire à chaque tentative au lieu de réutiliser celui stocké avec
- * l'utilisateur. Le hash calculé ne correspond donc jamais au hash stocké,
- * même avec le bon mot de passe. Reproduction simple et systématique,
- * stack trace complète disponible (throw explicite).
- */
-
 export interface User {
   username: string;
   passwordHash: string;
@@ -36,8 +26,7 @@ export function login(username: string, password: string): User {
     throw new Error(`Utilisateur inconnu: ${username}`);
   }
 
-  const wrongSalt = crypto.randomBytes(8).toString('hex');
-  const candidateHash = hashPassword(password, wrongSalt);
+  const candidateHash = hashPassword(password, user.salt);
 
   if (candidateHash !== user.passwordHash) {
     throw new Error('Mot de passe incorrect');
