@@ -107,3 +107,35 @@ describe('generateSummaryReport', () => {
     expect(report).toContain('Max: N/A');
   });
 });
+
+describe('generateSummaryReport - cohérence arrondi lignes vs total', () => {
+  // Générateur déterministe (LCG) pour produire des montants à précision variable
+  // (2 à 4 décimales), simulant des données reçues via POST /api/summary depuis
+  // une source externe (export, calcul en amont) qui n'arrondit pas à 2 décimales.
+  function randomAmount(seed: number): number {
+    seed = (seed * 9301 + 49297) % 233280;
+    const base = (seed / 233280) * 200 - 50;
+    const decimals = 2 + (seed % 3);
+    return Number(base.toFixed(decimals));
+  }
+
+  it("la somme des montants affichés (2 décimales) par ligne doit être égale au Total affiché", () => {
+    const n = 500;
+    const text = Array.from({ length: n }, (_, i) => `L${i}: ${randomAmount(i + 1)}`).join('\n');
+
+    const { report } = generateSummaryReport(text);
+
+    const displayedLineAmounts = report
+      .split('\n')
+      .filter((l) => /^L\d+:/.test(l))
+      .map((l) => Number(l.split(': ')[1]));
+    const sumOfDisplayed = Math.round(displayedLineAmounts.reduce((s, a) => s + a, 0) * 100) / 100;
+
+    const totalDisplayed = Number(report.match(/Total: ([\d.-]+)/)![1]);
+
+    // Reproduit le Bug #5 : le Total est calculé sur les montants bruts non
+    // arrondis, alors que chaque ligne est affichée arrondie à 2 décimales —
+    // réadditionner les lignes du rapport ne redonne pas le Total affiché.
+    expect(totalDisplayed).toBeCloseTo(sumOfDisplayed, 2);
+  });
+});

@@ -58,12 +58,17 @@ export function parseLines(text: string): ParseResult {
 
     const label = trimmedLine.slice(0, separatorIndex).trim();
     const rawAmount = trimmedLine.slice(separatorIndex + 1).trim();
-    const amount = Number(rawAmount);
+    const parsedAmount = Number(rawAmount);
 
-    if (rawAmount === '' || Number.isNaN(amount)) {
+    if (rawAmount === '' || Number.isNaN(parsedAmount)) {
       errors.push({ line: lineNumber, message: `Montant non numérique : "${rawAmount}"` });
       return;
     }
+
+    // Arrondi à 2 décimales dès le parsing : un montant est une valeur monétaire,
+    // affichée partout en 2 décimales (formatLine) — arrondir ici évite que le
+    // Total (somme des valeurs brutes) diverge de la somme des lignes affichées.
+    const amount = Math.round(parsedAmount * 100) / 100;
 
     lines.push({ label, amount });
   });
