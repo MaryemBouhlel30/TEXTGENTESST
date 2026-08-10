@@ -42,3 +42,4 @@ mvn test           # suite JUnit
 ## CLAUDE.md
 
 Volontairement absent au démarrage de la formation — il sera construit collectivement en tout début de semaine (rappel condensé mémoire/contexte).
+# test TP bonus
