@@ -1,28 +1,31 @@
-name: Agent Issue Diagnostic
-
+name: Agent - Diagnostic Issue
+ 
 on:
   issues:
     types: [opened]
-
 permissions:
   contents: read
   issues: write
-
 jobs:
-  diagnose:
+  diagnostic:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Diagnose issue with Claude
-        uses: anthropics/claude-code-action@v1 
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          anthropic_api_key: ${{ secrets.TEST_REVUE }}
-          prompt: |
-            A new GitHub issue was just opened in this repository.
-            Investigate it against the codebase and post a diagnostic comment on the issue that includes:
-            - Likely root cause
-            - Affected files or modules (with paths)
-            - Suggested next steps to fix or investigate further
-            Do not make any code changes; only post your analysis as a comment on the issue.
+          node-version: 20
+      - name: Installer Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+      - name: Diagnostiquer l'issue et commenter automatiquement
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.TEST_REVUE}}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          echo "$ISSUE_BODY" > .issue-body.tmp
+          DIAGNOSTIC=$(claude -p "Lis le fichier .issue-body.tmp a la racine du projet. C'est le contenu d'une issue GitHub intitulee : $ISSUE_TITLE. Si c'est un bug technique, formule une hypothese sur la cause probable en te basant sur le code du depot. Sinon, resume la demande en une phrase. Reste concis (5 lignes maximum).")
+          rm .issue-body.tmp
+          gh issue comment "$ISSUE_NUMBER" --body "$DIAGNOSTIC"
