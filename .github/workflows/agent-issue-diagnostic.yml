@@ -1,0 +1,28 @@
+name: Agent Issue Diagnostic
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Diagnose issue with Claude
+        uses: anthropics/claude-code-action@v1 
+        with:
+          anthropic_api_key: ${{ secrets.TEST_REVUE }}
+          prompt: |
+            A new GitHub issue was just opened in this repository.
+            Investigate it against the codebase and post a diagnostic comment on the issue that includes:
+            - Likely root cause
+            - Affected files or modules (with paths)
+            - Suggested next steps to fix or investigate further
+            Do not make any code changes; only post your analysis as a comment on the issue.
